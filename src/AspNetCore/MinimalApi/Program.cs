@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,16 @@ builder.Services.AddSwaggerGen(setup => setup.SwaggerDoc("v1", new OpenApiInfo()
         Url = new Uri("https://demo.net")
     }
 }));
+builder.Services.AddHttpLogging(logging =>
+{
+    // Customize HTTP logging here.
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestHeaders.Add("My-Request-Header");
+    logging.ResponseHeaders.Add("My-Response-Header");
+    logging.MediaTypeOptions.AddText("application/javascript");
+    logging.RequestBodyLogLimit = 4096;
+    logging.ResponseBodyLogLimit = 4096;
+});
 
 var app = builder.Build();
 
@@ -33,6 +44,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSwagger();
+
+app.UseHttpLogging();
 
 app.MapGet("/todoitems", async ([FromServices] TodoDbContext dbContext) =>
 {
@@ -83,7 +96,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todo Api v1");
 });
 
-await app.Run();
+await app.RunAsync();
 
 public class TodoDbContext : DbContext
 {
