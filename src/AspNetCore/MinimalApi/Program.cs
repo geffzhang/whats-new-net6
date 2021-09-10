@@ -81,9 +81,9 @@ app.MapDelete("/todoitems/{id}", async ([FromServices] TodoDbContext dbContext, 
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todo Api v1");
-    c.RoutePrefix = string.Empty;
 });
-app.Run();
+
+await app.Run();
 
 public class TodoDbContext : DbContext
 {
