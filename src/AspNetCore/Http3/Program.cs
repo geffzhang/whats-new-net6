@@ -1,5 +1,10 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,12 +13,10 @@ builder.WebHost.UseKestrel()
     // Set up Quic options
     .UseQuic(options =>
     {
-        options.Alpn = "h3-29";
         options.IdleTimeout = TimeSpan.FromMinutes(1);
     })
     .ConfigureKestrel((context, options) =>
     {
-        options.EnableAltSvc = true;
         options.Listen(IPAddress.Any, 5001, listenOptions =>
         {
             // Use Http3

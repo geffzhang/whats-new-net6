@@ -1,4 +1,6 @@
-﻿public struct WeatherObservation
+﻿using System;
+
+public struct WeatherObservation
 {
     public DateTime RecordedAt { get; init; }
     public decimal TemperatureInCelsius { get; init; }
